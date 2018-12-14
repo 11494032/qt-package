@@ -4,6 +4,7 @@
 #include <QAxObject>
 #include <QVariant>
 #include <QDebug>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -85,6 +86,7 @@ void MainWindow::castVariant2ListListVariant(const QVariant &var)
         }
         else
         {
+
             int row = ui->tableWidget->rowCount();
             ui->tableWidget->setRowCount(row + 1);
             for (int j = 0; j < rowData.size(); j++)
@@ -94,6 +96,43 @@ void MainWindow::castVariant2ListListVariant(const QVariant &var)
                  ui->tableWidget->setItem(row, j, item);
             }
         }
+
     }
+
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+   QString fileName = QFileDialog::getOpenFileName(this,tr("选择日志文件"),"",tr("(*.xlsx)")); //选择路径
+   if (fileName.isEmpty())     //如果未选择文件便确认，即返回
+       return;
+   ui->lineEdit->setText(fileName);
+   openExcel(fileName);
+
+   //2018-02-11
+   QString lastTime = ( ui->tableWidget->item(0,0)->text()).left(10);
+   QString lastSeq = ui->tableWidget->item(0,1)->text();
+   QString lastImei = ui->tableWidget->item(0,2)->text();
+   qDebug()<<lastTime<<lastSeq<<lastImei;
+
+   //时间相同，imei相同，序号一个个比较
+   //循环读取数据
+   for(int i=1;i<ui->tableWidget->rowCount();i++){
+       // j<ui->tableWidget->columnCount()
+       for(int j=0;j<3;j++){
+           if(ui->tableWidget->item(i,j)!=NULL){               //一定要先判断非空，否则会报错
+              // qDebug()<<ui->tableWidget->item(i,j)->text();
+               if( j == 0 ){
+                  if( ui->tableWidget->item(i,j)->text().startsWith(lastTime) ) { //同一天
+
+                  }
+                  else{
+                    //写入登记表
+                   QString lastTime = ( ui->tableWidget->item(0,0)->text()).left(10);
+                  }
+               }
+           }
+       }
+   }
 
 }

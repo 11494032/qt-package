@@ -22,6 +22,9 @@ public:
     QVariant readAll(QAxObject *sheet);
     void castVariant2ListListVariant(const QVariant &var);
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
